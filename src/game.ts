@@ -1,7 +1,7 @@
 import { GameBoard } from './gameBoard';
 import { TerrainType, Position, KeyboardControls, GameState } from './types';
 import { Piece, PIECES } from './piece';
-import { CanvasRenderer } from './renderers/CanvasRenderer';
+import { CanvasRenderer } from './renderers';
 import { setupTouchControls } from './touchControls';
 import { LineCompleteAnimation } from './animations/LineCompleteAnimation';
 import { Animation } from './animations/Animation';
@@ -22,7 +22,10 @@ const gameState: GameState = {
   playerPosition: { x: 0, y: 0 },
   enemies: [],
   treasures: [],
-  messages: []
+  messages: [],
+  // Action Points System (for Phase 1.1)
+  actionPoints: 3,
+  maxActionPoints: 3
 };
 
 let board: GameBoard = new GameBoard(BOARD_WIDTH, BOARD_HEIGHT);
@@ -121,6 +124,9 @@ function initializeGame(): void {
   gameState.linesCompleted = 0;
   gameState.hazardsCount = 0;
   
+  // Hide entity layer during building phase
+  renderer.entityLayer.setVisible(false);
+  
   // Generate first piece
   generatePiece();
   
@@ -156,50 +162,38 @@ function gameLoop(timestamp: number): void {
   // Update game state
   update(deltaTime);
   
+  // Update renderer
+  renderer.update(deltaTime);
+  
   // Render game
-  render();
+  renderer.render();
   
   // Continue loop
   requestAnimationFrame(gameLoop);
 }
 
 function update(deltaTime: number): void {
-  // Update animations
-  animations = animations.filter(animation => !animation.update(deltaTime));
-  
   if (gameState.phase === 'BUILDING' && gameState.currentPiece) {
     dropCounter += deltaTime;
     if (dropCounter > dropInterval) {
       movePieceDown();
       dropCounter = 0;
     }
-  }
-}
-
-function render(): void {
-  renderer.clear();
-  
-  // Render the board
-  renderer.renderBoard(board);
-  
-  // Render current piece in building phase
-  if (gameState.phase === 'BUILDING' && gameState.currentPiece) {
+    
+    // Update the piece in the renderer
     renderer.renderPiece(gameState.currentPiece, gameState.currentPiecePosition);
   }
   
-  // Render entities in adventure phase
-  if (gameState.phase === 'ADVENTURE') {
-    renderer.renderEntities(
-      gameState.playerPosition,
-      gameState.enemies,
-      gameState.treasures
-    );
-  }
-  
-  // Render animations
-  const ctx = (document.getElementById('game-canvas') as HTMLCanvasElement).getContext('2d')!;
-  animations.forEach(animation => animation.render(ctx));
+  // Update UI
+  renderer.renderUI(gameState);
 }
+
+// Toggle performance metrics display with 'P' key
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'p' || event.key === 'P') {
+    renderer.togglePerformanceMetrics();
+  }
+});
 
 function generatePiece(): void {
   const randomPiece = PIECES[Math.floor(Math.random() * PIECES.length)];
@@ -209,6 +203,11 @@ function generatePiece(): void {
     y: gameState.currentPiece.position.y 
   };
   displayCurrentPiece();
+  
+  // Update the piece in the renderer immediately
+  if (renderer) {
+    renderer.renderPiece(gameState.currentPiece, gameState.currentPiecePosition);
+  }
 }
 
 function displayCurrentPiece(): void {
@@ -260,6 +259,11 @@ function rotatePiece() {
     gameState.currentPiece.shape = originalShape; //revert
   }
   displayCurrentPiece();
+  
+  // Update the piece in the renderer
+  if (renderer) {
+    renderer.renderPiece(gameState.currentPiece, gameState.currentPiecePosition);
+  }
 }
 
 function movePieceLeft() {
@@ -270,6 +274,11 @@ function movePieceLeft() {
     };
     if (isValidMove(gameState.currentPiece, newPosition)) {
       gameState.currentPiecePosition = newPosition;
+      
+      // Update the piece in the renderer
+      if (renderer) {
+        renderer.renderPiece(gameState.currentPiece, gameState.currentPiecePosition);
+      }
     }
   } else if (gameState.phase === 'ADVENTURE') {
     movePlayer(-1, 0);
@@ -284,6 +293,11 @@ function movePieceRight() {
     };
     if (isValidMove(gameState.currentPiece, newPosition)) {
       gameState.currentPiecePosition = newPosition;
+      
+      // Update the piece in the renderer
+      if (renderer) {
+        renderer.renderPiece(gameState.currentPiece, gameState.currentPiecePosition);
+      }
     }
   } else if (gameState.phase === 'ADVENTURE') {
     movePlayer(1, 0);
@@ -298,6 +312,11 @@ function movePieceDown() {
     };
     if (isValidMove(gameState.currentPiece, newPosition)) {
       gameState.currentPiecePosition = newPosition;
+      
+      // Update the piece in the renderer
+      if (renderer) {
+        renderer.renderPiece(gameState.currentPiece, gameState.currentPiecePosition);
+      }
     } else {
       placePiece();
     }
@@ -314,6 +333,13 @@ function dropPiece() {
     y: gameState.currentPiecePosition.y + 1 
   })) {
     gameState.currentPiecePosition.y++;
+    
+    // Update the piece in the renderer during the drop
+    if (renderer) {
+      renderer.renderPiece(gameState.currentPiece, gameState.currentPiecePosition);
+      // Render to show the piece moving
+      renderer.render();
+    }
   }
   placePiece();
 }
@@ -367,7 +393,7 @@ function placePiece() {
     // Add line completion animations
     const cellSize = 30; // This should match the cell size in the renderer
     completedLines.forEach(line => {
-      animations.push(new LineCompleteAnimation(line, BOARD_WIDTH, cellSize));
+      renderer.addAnimation(new LineCompleteAnimation(line, BOARD_WIDTH, cellSize));
     });
   }
 
@@ -393,6 +419,9 @@ function switchPhase() {
 
     // Convert the world for adventure mode
     prepareAdventurePhase();
+    
+    // Show entity layer in adventure phase
+    renderer.entityLayer.setVisible(true);
 
     // Display instructions
     infoPanel.innerHTML = `
@@ -415,6 +444,9 @@ function switchPhase() {
     linesCountElement.textContent = '0';
     hazardsCountElement.textContent = '0';
     scoreElement.textContent = '0';
+    
+    // Hide entity layer in building phase
+    renderer.entityLayer.setVisible(false);
 
     generatePiece();
 
@@ -428,22 +460,52 @@ function switchPhase() {
 }
 
 function prepareAdventurePhase() {
-  // Place player at the top
-  for (let x = 0; x < BOARD_WIDTH; x++) {
-    if (board.getCell(x, 0) !== TerrainType.HAZARD && board.getCell(x, 0) !== TerrainType.EMPTY) {
-      gameState.playerPosition = { x, y: 0 };
-      break;
+  // Place player at the top middle of the board
+  const middleX = Math.floor(BOARD_WIDTH / 2);
+  
+  // Try the middle position first
+  if (board.getCell(middleX, 0) !== TerrainType.HAZARD && board.getCell(middleX, 0) !== TerrainType.EMPTY) {
+    gameState.playerPosition = { x: middleX, y: 0 };
+  } else {
+    // If middle position is not valid, try positions to the left and right
+    let found = false;
+    for (let offset = 1; offset < BOARD_WIDTH / 2 && !found; offset++) {
+      // Try right
+      if (middleX + offset < BOARD_WIDTH && 
+          board.getCell(middleX + offset, 0) !== TerrainType.HAZARD && 
+          board.getCell(middleX + offset, 0) !== TerrainType.EMPTY) {
+        gameState.playerPosition = { x: middleX + offset, y: 0 };
+        found = true;
+      } 
+      // Try left
+      else if (middleX - offset >= 0 && 
+               board.getCell(middleX - offset, 0) !== TerrainType.HAZARD && 
+               board.getCell(middleX - offset, 0) !== TerrainType.EMPTY) {
+        gameState.playerPosition = { x: middleX - offset, y: 0 };
+        found = true;
+      }
     }
-  }
-
-  // If no valid position found, place player at a random position
-  if (!gameState.playerPosition.x && !gameState.playerPosition.y) {
-    do {
-      gameState.playerPosition = {
-        x: Math.floor(Math.random() * BOARD_WIDTH),
-        y: Math.floor(Math.random() * 3)
-      };
-    } while (board.getCell(gameState.playerPosition.x, gameState.playerPosition.y) === TerrainType.HAZARD);
+    
+    // If still no valid position found, try any position at the top
+    if (!found) {
+      for (let x = 0; x < BOARD_WIDTH; x++) {
+        if (board.getCell(x, 0) !== TerrainType.HAZARD && board.getCell(x, 0) !== TerrainType.EMPTY) {
+          gameState.playerPosition = { x, y: 0 };
+          found = true;
+          break;
+        }
+      }
+      
+      // If still no valid position found, place player at a random position
+      if (!found) {
+        do {
+          gameState.playerPosition = {
+            x: Math.floor(Math.random() * BOARD_WIDTH),
+            y: Math.floor(Math.random() * 3)
+          };
+        } while (board.getCell(gameState.playerPosition.x, gameState.playerPosition.y) === TerrainType.HAZARD);
+      }
+    }
   }
 
   // Create enemies from hazards

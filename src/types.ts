@@ -30,8 +30,10 @@ export interface KeyboardControls {
   switchPhase: string[];
 }
 
+export type GamePhase = 'BUILDING' | 'ADVENTURE';
+
 export interface GameState {
-  phase: 'BUILDING' | 'ADVENTURE';
+  phase: GamePhase;
   score: number;
   linesCompleted: number;
   hazardsCount: number;
@@ -45,4 +47,7 @@ export interface GameState {
     timestamp: number;
     type?: 'info' | 'success' | 'warning' | 'danger';
   }[];
+  // Action Points System (for Phase 1.1)
+  actionPoints: number;
+  maxActionPoints: number;
 }
