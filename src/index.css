@@ -1,0 +1,153 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #222;
+    color: white;
+    padding: 20px;
+}
+
+h1 {
+    margin-bottom: 10px;
+}
+
+.game-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+}
+
+#game-board {
+    border: 2px solid #555;
+    background-color: #111;
+    display: grid;
+    grid-template-columns: repeat(10, 30px);
+    grid-template-rows: repeat(15, 30px);
+    gap: 1px;
+}
+
+.cell {
+    width: 30px;
+    height: 30px;
+    box-sizing: border-box;
+}
+
+.empty {
+    background-color: #333;
+}
+
+.forest {
+    background-color: #2d6a4f;
+}
+
+.mountain {
+    background-color: #6c757d;
+}
+
+.water {
+    background-color: #0077b6;
+}
+
+.path {
+    background-color: #ffdda1;
+    background-image: linear-gradient(135deg, #ffdda1 25%, #ffb347 25%, #ffb347 50%, #ffdda1 50%, #ffdda1 75%, #ffb347 75%, #ffb347 100%);
+    background-size: 10px 10px;
+}
+
+.hazard {
+    background-color: #9d0208;
+}
+
+.player {
+    background-color: #fb8500;
+    border-radius: 50%;
+}
+
+.enemy {
+    background-color: #d00000;
+    clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+}
+
+.treasure {
+    background-color: #ffba08;
+    clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+}
+
+.safe-haven {
+    background-color: #8ecae6;
+}
+
+#current-piece {
+    display: grid;
+    grid-template-columns: repeat(4, 20px);
+    grid-template-rows: repeat(4, 20px);
+    gap: 1px;
+    margin-bottom: 20px;
+}
+
+.piece-cell {
+    width: 20px;
+    height: 20px;
+}
+
+#controls {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin: 20px 0;
+    align-items: center;
+}
+
+#controls .button-row {
+    display: flex;
+    gap: 10px;
+}
+
+button {
+    padding: 8px 16px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+#info-panel {
+    background-color: #333;
+    padding: 15px;
+    border-radius: 5px;
+    margin-top: 20px;
+    max-width: 500px;
+}
+
+#phase-indicator {
+    font-size: 24px;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+#stats {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+
+.stats div {
+    background-color: #222;
+    padding: 8px;
+    border-radius: 4px;
+    min-width: 100px;
+    text-align: center;
+}

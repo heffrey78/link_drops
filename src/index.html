@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tetris Adventure</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <div id="game-board"></div>
+    <div id="info-panel"></div>
+    <div id="controls">
+        <div id="current-piece"></div>
+        <div id="phase-indicator">BUILDING PHASE</div>
+        <div id="stats">
+            <div>Lines: <span id="lines-count">0</span></div>
+            <div>Hazards: <span id="hazards-count">0</span></div>
+            <div>Score: <span id="score">0</span></div>
+        </div>
+        <div class="button-row">
+            <button id="rotate-btn">Rotate</button>
+            <button id="left-btn">Left</button>
+            <button id="right-btn">Right</button>
+            <button id="down-btn">Down</button>
+            <button id="drop-btn">Drop</button>
+        </div>
+        <button id="switch-phase-btn">Complete Phase</button>
+    </div>
+    <script type="module" src="./game.ts"></script>
+</body>
+</html>

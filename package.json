@@ -1,0 +1,18 @@
+{
+  "name": "tetris-adventure",
+  "version": "1.0.0",
+  "description": "A Tetris game with an adventure mode.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^5.4.5",
+    "vite": "^5.0.0"
+  }
+}
