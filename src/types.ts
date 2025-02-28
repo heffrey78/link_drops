@@ -29,3 +29,20 @@ export interface KeyboardControls {
   drop: string[];
   switchPhase: string[];
 }
+
+export interface GameState {
+  phase: 'BUILDING' | 'ADVENTURE';
+  score: number;
+  linesCompleted: number;
+  hazardsCount: number;
+  currentPiece: any | null; // Using any to avoid circular dependency
+  currentPiecePosition: Position;
+  playerPosition: Position;
+  enemies: Position[];
+  treasures: (Position & { value: number })[];
+  messages: {
+    text: string;
+    timestamp: number;
+    type?: 'info' | 'success' | 'warning' | 'danger';
+  }[];
+}

@@ -1,8 +1,8 @@
-# Tetris Adventure
+# Link Drops
 
 ## Description
 
-Tetris Adventure is a unique browser-based game that blends the addictive gameplay of Tetris with an engaging adventure exploration element. The game is divided into two distinct phases: **Building Phase** and **Adventure Phase**, each offering a different style of gameplay and strategic challenges.
+Link Drops is a unique browser-based game that blends the addictive gameplay of Tetris with an engaging adventure exploration element. The game is divided into two distinct phases: **Building Phase** and **Adventure Phase**, each offering a different style of gameplay and strategic challenges.
 
 In the **Building Phase**, players are tasked with constructing the game world using familiar Tetris-style pieces. As pieces are placed, the goal is to complete horizontal lines. Successfully completed lines are transformed into **paths** for the adventure phase, representing safe and traversable routes. Conversely, any gaps or unfilled spaces within the Tetris grid become **hazards**, which will play a critical role in the subsequent adventure phase by spawning enemies. This phase requires strategic planning and spatial reasoning, as the layout created directly impacts the difficulty and dynamics of the adventure to come.
 
@@ -67,8 +67,8 @@ Transitioning to the **Adventure Phase**, players explore the world they have me
 
 ## Technologies Used
 
-*   **HTML**: Provides the structure for the game interface and elements.
-*   **CSS**: Styles the game, including the board, pieces, and UI elements, to create a visually appealing experience.
+*   **HTML5 Canvas**: Provides high-performance rendering for the game board and animations.
+*   **HTML & CSS**: Structures and styles the UI elements outside the game board.
 *   **TypeScript**: Implements the game logic with strong typing, enhancing code quality and maintainability.
 *   **Vite**: Modern build tool that provides fast development server with hot module replacement and optimized production builds.
 
@@ -77,8 +77,10 @@ Transitioning to the **Adventure Phase**, players explore the world they have me
 The game is structured with a clear separation of concerns:
 
 *   **Game Logic (TypeScript)**: Handles game state management, piece generation, movement, collision detection, scoring, and phase transitions.
-*   **Rendering (TypeScript & DOM)**: Dynamically updates the HTML elements to reflect the current game state, rendering the game board, pieces, player, enemies, and treasures.
+*   **Rendering (Canvas)**: Uses HTML5 Canvas for high-performance rendering of the game board, pieces, and entities. Implements a renderer interface for clean separation from game logic.
+*   **Animation System**: Provides a framework for smooth animations like line completion effects.
 *   **User Interface (HTML & CSS)**: Provides the interactive elements such as buttons and information panels, styled with CSS for a user-friendly presentation.
+*   **Input Handling**: Supports both keyboard and touch controls for cross-device compatibility.
 
 ## Development
 

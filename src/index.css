@@ -19,13 +19,11 @@ h1 {
     align-items: center;
 }
 
-#game-board {
-    border: 2px solid #555;
+canvas#game-canvas {
+    display: block;
+    margin: 0 auto;
     background-color: #111;
-    display: grid;
-    grid-template-columns: repeat(10, 30px);
-    grid-template-rows: repeat(15, 30px);
-    gap: 1px;
+    border: 2px solid #555;
 }
 
 .cell {
@@ -148,6 +146,63 @@ h1 {
     max-width: 500px;
 }
 
+#status-log {
+    background-color: #333;
+    padding: 15px;
+    border-radius: 5px;
+    margin-top: 20px;
+    max-width: 500px;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+#status-log h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+#log-messages {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.log-message {
+    padding: 8px;
+    border-radius: 4px;
+    font-size: 14px;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.log-message .timestamp {
+    font-size: 12px;
+    opacity: 0.7;
+    margin-right: 8px;
+}
+
+.log-message.info {
+    background-color: #2c3e50;
+}
+
+.log-message.success {
+    background-color: #27ae60;
+}
+
+.log-message.warning {
+    background-color: #f39c12;
+    color: #111;
+}
+
+.log-message.danger {
+    background-color: #c0392b;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
 #phase-indicator {
     font-size: 24px;
     margin-bottom: 15px;
@@ -166,4 +221,43 @@ h1 {
     border-radius: 4px;
     min-width: 100px;
     text-align: center;
+}
+
+.mobile-controls {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.mobile-controls button {
+    width: 50px;
+    height: 50px;
+    font-size: 20px;
+    background-color: rgba(255, 255, 255, 0.2);
+    border: 1px solid #555;
+    border-radius: 5px;
+    color: white;
+}
+
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+    
+    .mobile-controls {
+        display: flex;
+    }
+    
+    .controls-display {
+        display: none;
+    }
+    
+    #controls {
+        flex-direction: column;
+    }
 }

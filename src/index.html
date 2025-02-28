@@ -2,11 +2,16 @@
 <html>
 <head>
     <title>Link Drops</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="index.css">
 </head>
 <body>
-    <div id="game-board"></div>
+    <canvas id="game-canvas"></canvas>
     <div id="info-panel"></div>
+    <div id="status-log">
+        <h3>Game Log</h3>
+        <div id="log-messages"></div>
+    </div>
     <div id="controls">
         <div id="current-piece"></div>
         <div id="phase-indicator">BUILDING PHASE</div>
