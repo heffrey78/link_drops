@@ -1,5 +1,5 @@
 import { GameBoard } from './gameBoard';
-import { TerrainType, Position } from './types';
+import { TerrainType, Position, KeyboardControls } from './types';
 import { Piece, PIECES } from './piece';
 
 // Game constants
@@ -26,15 +26,41 @@ const linesCountElement: HTMLElement = document.getElementById('lines-count')!;
 const hazardsCountElement: HTMLElement = document.getElementById('hazards-count')!;
 const scoreElement: HTMLElement = document.getElementById('score')!;
 const infoPanel: HTMLElement = document.getElementById('info-panel')!;
-const switchPhaseBtn: HTMLButtonElement = document.getElementById('switch-phase-btn')! as HTMLButtonElement;
 
-// Button controls
-document.getElementById('rotate-btn')!.addEventListener('click', rotatePiece);
-document.getElementById('left-btn')!.addEventListener('click', movePieceLeft);
-document.getElementById('right-btn')!.addEventListener('click', movePieceRight);
-document.getElementById('down-btn')!.addEventListener('click', movePieceDown);
-document.getElementById('drop-btn')!.addEventListener('click', dropPiece);
-switchPhaseBtn.addEventListener('click', switchPhase);
+// Keyboard controls configuration
+const keyboardControls: KeyboardControls = {
+  rotate: ['ArrowUp', 'w', 'W'],
+  moveLeft: ['ArrowLeft', 'a', 'A'],
+  moveRight: ['ArrowRight', 'd', 'D'],
+  moveDown: ['ArrowDown', 's', 'S'],
+  drop: [' '], // Space
+  switchPhase: ['Enter']
+};
+
+// Keyboard event handler
+function handleKeyDown(event: KeyboardEvent): void {
+  // Prevent default actions for game keys
+  if (Object.values(keyboardControls).flat().includes(event.key)) {
+    event.preventDefault();
+  }
+
+  if (keyboardControls.rotate.includes(event.key)) {
+    rotatePiece();
+  } else if (keyboardControls.moveLeft.includes(event.key)) {
+    movePieceLeft();
+  } else if (keyboardControls.moveRight.includes(event.key)) {
+    movePieceRight();
+  } else if (keyboardControls.moveDown.includes(event.key)) {
+    movePieceDown();
+  } else if (keyboardControls.drop.includes(event.key)) {
+    dropPiece();
+  } else if (keyboardControls.switchPhase.includes(event.key)) {
+    switchPhase();
+  }
+}
+
+// Add keyboard event listener
+document.addEventListener('keydown', handleKeyDown);
 
 // Initialize the game
 initializeGame();
@@ -278,7 +304,6 @@ function switchPhase() {
     if (gamePhase === 'BUILDING') {
         gamePhase = 'ADVENTURE';
         phaseIndicator.textContent = 'ADVENTURE PHASE';
-        switchPhaseBtn.textContent = 'Restart Game';
 
         // Convert the world for adventure mode
         prepareAdventurePhase();
@@ -286,14 +311,13 @@ function switchPhase() {
         // Display instructions
         infoPanel.innerHTML = `
             <p>Adventure Phase! Explore the world you've built.</p>
-            <p>Use arrow buttons to move. Collect treasures (★) and avoid enemies (◆).</p>
+            <p>Use arrow keys or WASD to move. Collect treasures (★) and avoid enemies (◆).</p>
             <p>Paths (yellow) are safe to travel. Hazards spawned enemies!</p>
         `;
     } else {
         // Reset the game
         gamePhase = 'BUILDING';
         phaseIndicator.textContent = 'BUILDING PHASE';
-        switchPhaseBtn.textContent = 'Complete Phase';
 
         board = new GameBoard(BOARD_WIDTH, BOARD_HEIGHT);
         score = 0;

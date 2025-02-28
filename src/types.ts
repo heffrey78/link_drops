@@ -20,3 +20,12 @@ export interface PieceTemplate {
     shape: number[][];
     terrainType: TerrainType
 }
+
+export interface KeyboardControls {
+  rotate: string[];
+  moveLeft: string[];
+  moveRight: string[];
+  moveDown: string[];
+  drop: string[];
+  switchPhase: string[];
+}

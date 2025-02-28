@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Tetris Adventure</title>
+    <title>Link Drops</title>
     <link rel="stylesheet" href="index.css">
 </head>
 <body>
@@ -15,14 +15,17 @@
             <div>Hazards: <span id="hazards-count">0</span></div>
             <div>Score: <span id="score">0</span></div>
         </div>
-        <div class="button-row">
-            <button id="rotate-btn">Rotate</button>
-            <button id="left-btn">Left</button>
-            <button id="right-btn">Right</button>
-            <button id="down-btn">Down</button>
-            <button id="drop-btn">Drop</button>
+        <div id="keyboard-controls" class="controls-display">
+            <h3>Keyboard Controls</h3>
+            <ul>
+                <li><span class="key">↑</span> or <span class="key">W</span>: Rotate</li>
+                <li><span class="key">←</span> or <span class="key">A</span>: Move Left</li>
+                <li><span class="key">→</span> or <span class="key">D</span>: Move Right</li>
+                <li><span class="key">↓</span> or <span class="key">S</span>: Move Down</li>
+                <li><span class="key">Space</span>: Drop</li>
+                <li><span class="key">Enter</span>: Switch Phase</li>
+            </ul>
         </div>
-        <button id="switch-phase-btn">Complete Phase</button>
     </div>
     <script type="module" src="./game.ts"></script>
 </body>
