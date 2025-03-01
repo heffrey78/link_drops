@@ -6,7 +6,6 @@
 - Implement Action Points (AP) system for turn-based movement
 - Refactor terrain types to include varied AP costs (Path: 1, Forest: 2, Water: 3, etc.)
 - Modify line completion to maintain terrain characteristics while making traversable
-- Enhance terrain UI with tooltips showing AP costs and effects
 - Add special terrain effects (forest confuses enemies, mountains give vision bonus)
 
 ### 1.2 Board Generation & Hero Positioning (Weeks 3-4)

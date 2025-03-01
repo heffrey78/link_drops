@@ -19,7 +19,7 @@ export class PieceLayer extends AbstractLayer {
     cellSize: number,
     piece: Piece | null = null,
     position: Position = { x: 0, y: 0 },
-    zIndex: number = 2
+    zIndex: number = 1
   ) {
     super(zIndex);
     this.cellSize = cellSize;
@@ -88,19 +88,36 @@ export class PieceLayer extends AbstractLayer {
   render(ctx: CanvasRenderingContext2D): void {
     if (!this.visible || !this.piece) return;
     
-    // Optimize by merging overlapping dirty regions
-    this.mergeOverlappingDirtyRegions();
+    // Save context state
+    ctx.save();
     
-    if (this.dirtyRegions.length === 0) {
-      // If no dirty regions, render the entire piece
-      this.renderPiece(ctx);
-    } else {
-      // Otherwise, render only the dirty regions
-      this.renderPieceInDirtyRegions(ctx);
+    // Set composite operation to ensure proper transparency
+    ctx.globalCompositeOperation = 'source-over';
+    
+    // Render the piece
+    for (let y = 0; y < this.piece.shape.length; y++) {
+        for (let x = 0; x < this.piece.shape[y].length; x++) {
+            if (this.piece.shape[y][x] !== 0) {
+                const boardX = this.position.x + x;
+                const boardY = this.position.y + y;
+                
+                const terrainType = this.piece.shape[y][x] as TerrainType;
+                const terrainClass = this.getTerrainClass(terrainType);
+                const color = this.colors[terrainClass];
+                
+                ctx.fillStyle = color;
+                ctx.fillRect(
+                    boardX * this.cellSize,
+                    boardY * this.cellSize,
+                    this.cellSize,
+                    this.cellSize
+                );
+            }
+        }
     }
     
-    // Clear dirty regions after rendering
-    this.clearDirtyRegions();
+    // Restore context state
+    ctx.restore();
   }
   
   /**
@@ -110,16 +127,27 @@ export class PieceLayer extends AbstractLayer {
   private renderPiece(ctx: CanvasRenderingContext2D): void {
     if (!this.piece) return;
     
+    // Clear the area where the piece will be rendered
+    const pieceWidth = this.piece.shape[0].length * this.cellSize;
+    const pieceHeight = this.piece.shape.length * this.cellSize;
+    ctx.clearRect(
+        this.position.x * this.cellSize,
+        this.position.y * this.cellSize,
+        pieceWidth,
+        pieceHeight
+    );
+    
+    // Then render each non-empty cell
     for (let y = 0; y < this.piece.shape.length; y++) {
-      for (let x = 0; x < this.piece.shape[y].length; x++) {
-        if (this.piece.shape[y][x] !== 0) {
-          const boardX = this.position.x + x;
-          const boardY = this.position.y + y;
-          this.drawCell(ctx, boardX, boardY, this.piece.shape[y][x] as TerrainType);
+        for (let x = 0; x < this.piece.shape[y].length; x++) {
+            if (this.piece.shape[y][x] !== 0) {
+                const boardX = this.position.x + x;
+                const boardY = this.position.y + y;
+                this.drawCell(ctx, boardX, boardY, this.piece.shape[y][x] as TerrainType);
+            }
         }
-      }
     }
-  }
+}
   
   /**
    * Render only the piece cells in dirty regions

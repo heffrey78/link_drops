@@ -73,17 +73,6 @@ export class CanvasRenderer implements Renderer {
     
     // Sort layers by z-index
     this.sortLayers();
-    
-    // Add mouse move event listener for tooltips
-    this.canvas.addEventListener('mousemove', (event) => {
-      const position = this.getCanvasPosition(event.clientX, event.clientY);
-      this.uiLayer.updateHoveredCell(position.x, position.y);
-    });
-    
-    // Add mouse leave event listener to clear tooltips
-    this.canvas.addEventListener('mouseleave', () => {
-      this.uiLayer.clearHoveredCell();
-    });
   }
   
   /**

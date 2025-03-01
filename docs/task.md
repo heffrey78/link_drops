@@ -43,7 +43,6 @@
   - [ ] Implement terrain-specific line completion effects
 
 - [ ] **Enhance Terrain UI:**
-  - [ ] Add tooltips showing AP costs and effects
   - [ ] Create visual indicators for different terrain types
   - [ ] Implement terrain transition animations
   - [ ] Add accessibility features for terrain identification

@@ -28,28 +28,23 @@ export const PIECES: PieceTemplate[] = [
     // I piece
     {
         shape: [
-            [0, 0, 0, 0],
-            [1, 1, 1, 1],
-            [0, 0, 0, 0],
-            [0, 0, 0, 0]
+            [1, 1, 1, 1]
         ],
         terrainType: TerrainType.FOREST
     },
     // L piece
     {
         shape: [
-            [0, 0, 2],
-            [2, 2, 2],
-            [0, 0, 0]
+            [2, 0, 0],
+            [2, 2, 2]
         ],
         terrainType: TerrainType.MOUNTAIN
     },
     // J piece
     {
         shape: [
-            [3, 0, 0],
-            [3, 3, 3],
-            [0, 0, 0]
+            [0, 0, 3],
+            [3, 3, 3]
         ],
         terrainType: TerrainType.WATER
     },
@@ -65,8 +60,7 @@ export const PIECES: PieceTemplate[] = [
     {
         shape: [
             [0, 2, 0],
-            [2, 2, 2],
-            [0, 0, 0]
+            [2, 2, 2]
         ],
         terrainType: TerrainType.MOUNTAIN
     },
@@ -74,8 +68,7 @@ export const PIECES: PieceTemplate[] = [
     {
         shape: [
             [0, 3, 3],
-            [3, 3, 0],
-            [0, 0, 0]
+            [3, 3, 0]
         ],
         terrainType: TerrainType.WATER
     },
@@ -83,8 +76,7 @@ export const PIECES: PieceTemplate[] = [
     {
         shape: [
             [1, 1, 0],
-            [0, 1, 1],
-            [0, 0, 0]
+            [0, 1, 1]
         ],
         terrainType: TerrainType.FOREST
     }

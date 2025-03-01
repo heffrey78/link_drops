@@ -381,6 +381,8 @@ function placePiece() {
     }
   }
 
+  renderer.renderBoard(board);
+
   // Check for completed lines and convert to path
   const completedLines = board.checkCompletedLines();
   if (completedLines.length > 0) {
@@ -465,23 +467,23 @@ function prepareAdventurePhase() {
   
   // Try the middle position first
   if (board.getCell(middleX, 0) !== TerrainType.HAZARD && board.getCell(middleX, 0) !== TerrainType.EMPTY) {
-    gameState.playerPosition = { x: middleX, y: 0 };
+    gameState.playerPosition = { x: middleX, y: 1 };
   } else {
     // If middle position is not valid, try positions to the left and right
     let found = false;
     for (let offset = 1; offset < BOARD_WIDTH / 2 && !found; offset++) {
       // Try right
       if (middleX + offset < BOARD_WIDTH && 
-          board.getCell(middleX + offset, 0) !== TerrainType.HAZARD && 
-          board.getCell(middleX + offset, 0) !== TerrainType.EMPTY) {
-        gameState.playerPosition = { x: middleX + offset, y: 0 };
+          board.getCell(middleX + offset, 1) !== TerrainType.HAZARD && 
+          board.getCell(middleX + offset, 1) !== TerrainType.EMPTY) {
+        gameState.playerPosition = { x: middleX + offset, y: 1 };
         found = true;
       } 
       // Try left
       else if (middleX - offset >= 0 && 
-               board.getCell(middleX - offset, 0) !== TerrainType.HAZARD && 
-               board.getCell(middleX - offset, 0) !== TerrainType.EMPTY) {
-        gameState.playerPosition = { x: middleX - offset, y: 0 };
+               board.getCell(middleX - offset, 1) !== TerrainType.HAZARD && 
+               board.getCell(middleX - offset, 1) !== TerrainType.EMPTY) {
+        gameState.playerPosition = { x: middleX - offset, y: 1 };
         found = true;
       }
     }
@@ -489,8 +491,8 @@ function prepareAdventurePhase() {
     // If still no valid position found, try any position at the top
     if (!found) {
       for (let x = 0; x < BOARD_WIDTH; x++) {
-        if (board.getCell(x, 0) !== TerrainType.HAZARD && board.getCell(x, 0) !== TerrainType.EMPTY) {
-          gameState.playerPosition = { x, y: 0 };
+        if (board.getCell(x, 1) !== TerrainType.HAZARD && board.getCell(x, 1) !== TerrainType.EMPTY) {
+          gameState.playerPosition = { x, y: 1 };
           found = true;
           break;
         }
@@ -505,6 +507,12 @@ function prepareAdventurePhase() {
           };
         } while (board.getCell(gameState.playerPosition.x, gameState.playerPosition.y) === TerrainType.HAZARD);
       }
+
+      renderer.renderEntities(
+        gameState.playerPosition,
+        gameState.enemies,
+        gameState.treasures
+    );
     }
   }
 

@@ -20,7 +20,7 @@ export class EntityLayer extends AbstractLayer {
     playerPosition: Position,
     enemies: Position[] = [],
     treasures: (Position & { value: number })[] = [],
-    zIndex: number = 1
+    zIndex: number = 2
   ) {
     super(zIndex);
     this.cellSize = cellSize;
