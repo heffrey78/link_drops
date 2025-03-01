@@ -5,23 +5,212 @@
     <title>Link Drops</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="index.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #222;
+            color: white;
+            padding: 0;
+            margin: 0;
+            max-width: 100%;
+        }
+
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 10px;
+        }
+
+        .title-section {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin: 10px 0 0 0;
+            color: #ffb347;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        h2 {
+            font-size: 1.2rem;
+            margin: 5px 0;
+            font-weight: normal;
+            color: #8ecae6;
+        }
+
+        .game-section {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+
+        canvas#game-canvas {
+            display: block;
+            background-color: #111;
+            border: 2px solid #555;
+            max-width: 100%;
+            height: auto;
+        }
+
+        .info-section {
+            background-color: #333;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .info-title {
+            color: #ffb347;
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+            border-bottom: 1px solid #555;
+            padding-bottom: 8px;
+        }
+
+        .stats-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        #phase-indicator {
+            width: 100%;
+            background-color: #2d6a4f;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            border-radius: 4px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .stat-item {
+            background-color: #222;
+            padding: 10px;
+            border-radius: 4px;
+            flex: 1;
+            min-width: 100px;
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: #8ecae6;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: block;
+        }
+
+        #current-piece {
+            margin: 10px auto;
+            width: fit-content;
+        }
+
+        #status-log {
+            max-height: 200px;
+            overflow-y: auto;
+            margin-bottom: 15px;
+        }
+
+        #log-messages {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 10px;
+            font-size: 0.9rem;
+            color: #999;
+            border-top: 1px solid #444;
+            margin-top: 10px;
+        }
+
+        /* Instruction emphasis */
+        #info-panel p {
+            margin: 8px 0;
+        }
+        
+        #info-panel p:first-child {
+            font-weight: bold;
+            color: #ffb347;
+        }
+
+        /* Enhanced piece display */
+        .piece-cell {
+            width: 20px;
+            height: 20px;
+            border: 1px solid #333;
+        }
+    </style>
 </head>
 <body>
-    <canvas id="game-canvas"></canvas>
-    <div id="info-panel"></div>
-    <div id="status-log">
-        <h3>Game Log</h3>
-        <div id="log-messages"></div>
-    </div>
-    <div id="controls">
-        <div id="current-piece"></div>
-        <div id="phase-indicator">BUILDING PHASE</div>
-        <div id="stats">
-            <div>Lines: <span id="lines-count">0</span></div>
-            <div>Hazards: <span id="hazards-count">0</span></div>
-            <div>Score: <span id="score">0</span></div>
+    <div class="main-container">
+        <div class="title-section">
+            <h1>LINK DROPS</h1>
+            <h2>A Tetris-Adventure Hybrid</h2>
+        </div>
+
+        <div class="game-section">
+            <canvas id="game-canvas"></canvas>
+        </div>
+
+        <div class="info-section">
+            <h3 class="info-title">Game Status</h3>
+            <div class="stats-grid">
+                <div id="phase-indicator">BUILDING PHASE</div>
+                
+                <div class="stat-item">
+                    <span class="stat-label">Lines</span>
+                    <span class="stat-value" id="lines-count">0</span>
+                </div>
+                
+                <div class="stat-item">
+                    <span class="stat-label">Hazards</span>
+                    <span class="stat-value" id="hazards-count">0</span>
+                </div>
+                
+                <div class="stat-item">
+                    <span class="stat-label">Score</span>
+                    <span class="stat-value" id="score">0</span>
+                </div>
+            </div>
+            
+            <div id="current-piece"></div>
+        </div>
+
+        <div class="info-section">
+            <h3 class="info-title">Game Instructions</h3>
+            <div id="info-panel"></div>
+        </div>
+
+        <div class="info-section">
+            <h3 class="info-title">Game Log</h3>
+            <div id="status-log">
+                <div id="log-messages"></div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Arrow keys/WASD: Move • Space: Drop • Enter: Switch Phase</p>
         </div>
     </div>
+
     <script type="module" src="./game.ts"></script>
 </body>
 </html>
