@@ -462,60 +462,9 @@ function switchPhase() {
 }
 
 function prepareAdventurePhase() {
-  // Place player at the top middle of the board
-  const middleX = Math.floor(BOARD_WIDTH / 2);
+  // First determine player position
+  placePlayerAtStart();
   
-  // Try the middle position first
-  if (board.getCell(middleX, 0) !== TerrainType.HAZARD && board.getCell(middleX, 0) !== TerrainType.EMPTY) {
-    gameState.playerPosition = { x: middleX, y: 1 };
-  } else {
-    // If middle position is not valid, try positions to the left and right
-    let found = false;
-    for (let offset = 1; offset < BOARD_WIDTH / 2 && !found; offset++) {
-      // Try right
-      if (middleX + offset < BOARD_WIDTH && 
-          board.getCell(middleX + offset, 1) !== TerrainType.HAZARD && 
-          board.getCell(middleX + offset, 1) !== TerrainType.EMPTY) {
-        gameState.playerPosition = { x: middleX + offset, y: 1 };
-        found = true;
-      } 
-      // Try left
-      else if (middleX - offset >= 0 && 
-               board.getCell(middleX - offset, 1) !== TerrainType.HAZARD && 
-               board.getCell(middleX - offset, 1) !== TerrainType.EMPTY) {
-        gameState.playerPosition = { x: middleX - offset, y: 1 };
-        found = true;
-      }
-    }
-    
-    // If still no valid position found, try any position at the top
-    if (!found) {
-      for (let x = 0; x < BOARD_WIDTH; x++) {
-        if (board.getCell(x, 1) !== TerrainType.HAZARD && board.getCell(x, 1) !== TerrainType.EMPTY) {
-          gameState.playerPosition = { x, y: 1 };
-          found = true;
-          break;
-        }
-      }
-      
-      // If still no valid position found, place player at a random position
-      if (!found) {
-        do {
-          gameState.playerPosition = {
-            x: Math.floor(Math.random() * BOARD_WIDTH),
-            y: Math.floor(Math.random() * 3)
-          };
-        } while (board.getCell(gameState.playerPosition.x, gameState.playerPosition.y) === TerrainType.HAZARD);
-      }
-
-      renderer.renderEntities(
-        gameState.playerPosition,
-        gameState.enemies,
-        gameState.treasures
-    );
-    }
-  }
-
   // Create enemies from hazards
   gameState.enemies = [];
   for (let y = 0; y < BOARD_HEIGHT; y++) {
@@ -544,6 +493,85 @@ function prepareAdventurePhase() {
       }
     }
   }
+  
+  // Always update the renderer with the entities
+  renderer.renderEntities(
+    gameState.playerPosition,
+    gameState.enemies,
+    gameState.treasures
+  );
+}
+
+function placePlayerAtStart() {
+  const middleX = Math.floor(BOARD_WIDTH / 2);
+  const startY = 0; // Start at the top row
+  let found = false;
+  
+  // Strategy 1: Try the middle position at the top
+  if (isValidStartPosition(middleX, startY)) {
+    gameState.playerPosition = { x: middleX, y: startY };
+    found = true;
+  }
+  
+  // Strategy 2: Try positions expanding outward from the middle
+  if (!found) {
+    for (let offset = 1; offset < BOARD_WIDTH / 2 && !found; offset++) {
+      // Try right
+      if (middleX + offset < BOARD_WIDTH && isValidStartPosition(middleX + offset, startY)) {
+        gameState.playerPosition = { x: middleX + offset, y: startY };
+        found = true;
+      } 
+      // Try left
+      else if (middleX - offset >= 0 && isValidStartPosition(middleX - offset, startY)) {
+        gameState.playerPosition = { x: middleX - offset, y: startY };
+        found = true;
+      }
+    }
+  }
+  
+  // Strategy 3: Try any position in the top row
+  if (!found) {
+    for (let x = 0; x < BOARD_WIDTH; x++) {
+      if (isValidStartPosition(x, startY)) {
+        gameState.playerPosition = { x, y: startY };
+        found = true;
+        break;
+      }
+    }
+  }
+  
+  // Strategy 4: Check the first few rows
+  if (!found) {
+    for (let y = startY + 1; y < 3 && !found; y++) {
+      for (let x = 0; x < BOARD_WIDTH; x++) {
+        if (isValidStartPosition(x, y)) {
+          gameState.playerPosition = { x, y };
+          found = true;
+          break;
+        }
+      }
+    }
+  }
+  
+  // Last resort: Random position in the top section
+  if (!found) {
+    do {
+      gameState.playerPosition = {
+        x: Math.floor(Math.random() * BOARD_WIDTH),
+        y: Math.floor(Math.random() * 3)
+      };
+    } while (!isValidStartPosition(gameState.playerPosition.x, gameState.playerPosition.y));
+  }
+}
+
+function isValidStartPosition(x: number, y: number): boolean {
+  if (!board.isPositionValid(x, y)) {
+    return false;
+  }
+  
+  // Valid positions are those that aren't EMPTY or HAZARD
+  const cellType = board.getCell(x, y);
+  return cellType !== TerrainType.EMPTY && cellType !== TerrainType.HAZARD;
 }
 
 function movePlayer(dx: number, dy: number) {
@@ -582,6 +610,8 @@ function movePlayer(dx: number, dy: number) {
 
   // Move player
   gameState.playerPosition = { x: newX, y: newY };
+
+  renderer.renderPlayer(gameState.playerPosition);
 
   // Check for safe haven
   if (board.getCell(newX, newY) === TerrainType.SAFE_HAVEN) {
@@ -638,6 +668,8 @@ function moveEnemies() {
         enemy.y = newY;
       }
     }
+
+    renderer.renderEnemies(gameState.enemies);
   });
 }
 

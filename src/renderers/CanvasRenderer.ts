@@ -167,6 +167,18 @@ export class CanvasRenderer implements Renderer {
     this.entityLayer.updateEnemies(enemies);
     this.entityLayer.updateTreasures(treasures);
   }
+
+  renderPlayer(
+    player: Position
+  ): void {
+    this.entityLayer.updatePlayerPosition(player);
+  }
+
+  renderEnemies(
+    enemies: Position[]
+  ): void {
+    this.entityLayer.updateEnemies(enemies);
+  }
   
   /**
    * Render UI elements
